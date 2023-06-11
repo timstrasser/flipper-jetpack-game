@@ -4,6 +4,8 @@
 typedef enum {
     GameStateLife,
     GameStateGameOver,
+    GameStateMainMenu,
+    GameStateShop,
 } State;
 
 #endif // STATE_H

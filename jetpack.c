@@ -230,29 +230,11 @@ static void jetpack_game_render_callback(Canvas* const canvas, void* ctx) {
         canvas_draw_str_aligned(canvas, 64, 63, AlignCenter, AlignBottom, buffer);
 
         canvas_draw_rframe(canvas, 0, 3, 128, 49, 5);
-
-        // char buffer[12];
-        // snprintf(buffer, sizeof(buffer), "Dist: %u", game_state->distance);
-        // canvas_draw_str_aligned(canvas, 123, 12, AlignRight, AlignBottom, buffer);
-
-        // snprintf(buffer, sizeof(buffer), "Score: %u", game_state->points);
-        // canvas_draw_str_aligned(canvas, 5, 12, AlignLeft, AlignBottom, buffer);
-
-        // canvas_draw_str_aligned(canvas, 64, 34, AlignCenter, AlignCenter, "Highscore:");
-        // snprintf(buffer, sizeof(buffer), "Dist: %u", save_game.max_distance);
-        // canvas_draw_str_aligned(canvas, 123, 50, AlignRight, AlignBottom, buffer);
-
-        // snprintf(buffer, sizeof(buffer), "Score: %u", save_game.max_score);
-        // canvas_draw_str_aligned(canvas, 5, 50, AlignLeft, AlignBottom, buffer);
-
-        // canvas_draw_str_aligned(canvas, 64, 32, AlignCenter, AlignCenter, "boom.");
-
-        // if(furi_timer_is_running(game_state->timer)) {
-        //     furi_timer_start(game_state->timer, 0);
-        // }
     }
 
-    // canvas_draw_frame(canvas, 0, 0, 128, 64);
+    if(game_state->state == GameStateMainMenu) {
+        canvas_draw_icon(canvas, 0, 0, &I_main);
+    }
 
     furi_mutex_release(game_state->mutex);
 }
@@ -285,6 +267,7 @@ int32_t jetpack_game_app(void* p) {
 
     global_state = game_state;
     jetpack_game_state_init(game_state);
+    game_state->state = GameStateMainMenu;
 
     game_state->mutex = furi_mutex_alloc(FuriMutexTypeNormal);
     if(!game_state->mutex) {
@@ -338,6 +321,10 @@ int32_t jetpack_game_app(void* p) {
                     case InputKeyLeft:
                         break;
                     case InputKeyOk:
+                        if(game_state->state == GameStateMainMenu) {
+                            jetpack_game_state_init(game_state);
+                        }
+
                         if(game_state->state == GameStateGameOver) {
                             jetpack_game_state_init(game_state);
                         }
